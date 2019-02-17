@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgresVolume:/var/lib/postgresql/data
+
+  todo:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: todowebapp
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/postgres
+    ports:
+      - 3000:8080
+    volumes:
+      - .:/src/app/
+
+volumes:
+  postgresVolume:
